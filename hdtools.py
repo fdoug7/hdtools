@@ -7,7 +7,7 @@ import importlib
 import dns.resolver as dr   
 from datetime import datetime 
 
-check = 'spfva.gofax.com.au'
+check = '' # SPF Record to check
 spf = "v=spf1"
 
 
@@ -28,8 +28,8 @@ class MainWindow(QMainWindow):
 
     def DKIMCheck(self, key):
         domain = self.ui.lineEdit.text()
-        key1 = 'gfdk1._domainkey.' + domain
-        key2 = 'gfdk2._domainkey.' + domain
+        key1 = '' + domain # DKIM Key record
+        key2 = '' + domain # DKIM Key record
         try:
             record1 = dr.resolve(key1, 'CNAME').rrset
         except(dr.NoAnswer, dr.NXDOMAIN) as err:
@@ -49,14 +49,14 @@ class MainWindow(QMainWindow):
             records.append(str(record1).split())
             records.append(str(record2).split())
             if 'CNAME' in records:
-                if 'dk1.gofax.com.au.' in records:
+                if '' in records: # DKIM Value to check
                     self.ui.DKIMLabelResult_1.setText(f'{key1} is configured for {domain}')
                     self.log(f'{key1} is configured for {domain}')
                 else:
                     self.ui.DKIMLabelResult_1.setText(f'{key1} is NOT configured correctly for {domain}')
                     self.log(f'{key1} is NOT configured correctly for {domain}')
                 
-                if 'dk2.gofax.com.au.' in records:
+                if '' in records: # DKIM2  Value to check
                     self.ui.DKIMLabelResult_2.setText(f'{key2} is configured for {domain}')
                     self.log(f'{key2} is configured for {domain}')
                 else:
@@ -144,7 +144,7 @@ if __name__ == "__main__":
 
 # Function to import python scripts into UI as tabs
 # def moduleCheck():
-#     path = "D:\\code\\HD_Tool\\hdtools\\modules\\"
+#     path = ""
 #     custommodules = []
 #     sys.path.insert(1, path)
 #     python = False, ()
