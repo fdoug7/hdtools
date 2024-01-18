@@ -42,6 +42,16 @@
      <attribute name="title">
       <string>Log</string>
      </attribute>
+     <widget class="QTextBrowser" name="logBrowser">
+      <property name="geometry">
+       <rect>
+        <x>15</x>
+        <y>11</y>
+        <width>781</width>
+        <height>171</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="Records_Check">
      <attribute name="title">
@@ -50,14 +60,14 @@
      <widget class="QPushButton" name="pushButton">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>174</x>
         <y>10</y>
-        <width>75</width>
+        <width>91</width>
         <height>24</height>
        </rect>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string>Check Records</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit">
@@ -65,19 +75,113 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>113</width>
+        <width>151</width>
         <height>22</height>
        </rect>
       </property>
      </widget>
-     <widget class="QTextBrowser" name="textBrowser">
+     <widget class="QLabel" name="domainLabel">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>40</y>
-        <width>781</width>
-        <height>141</height>
+        <width>161</width>
+        <height>21</height>
        </rect>
+      </property>
+      <property name="text">
+       <string>Domain: </string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>161</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Contains spfva.gofax.com.au: </string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>161</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Contains DKIM Key 1: </string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>161</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Contains DKIM Key 2: </string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="domainLabelResult">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>40</y>
+        <width>611</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>domain</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="spfLabelResult">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>60</y>
+        <width>611</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>SPF</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="DKIMLabelResult_1">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>80</y>
+        <width>611</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>DKIM Key 1</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="DKIMLabelResult_2">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>100</y>
+        <width>611</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>DKIM Key 2</string>
       </property>
      </widget>
     </widget>

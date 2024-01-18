@@ -18,17 +18,65 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.pushButton.clicked.connect(self.recordChecker)
+        self.ui.pushButton.clicked.connect(self.DKIMCheck)
+        self.ui.pushButton.clicked.connect(self.SPFCheck)
 
-    
-    def recordChecker(self,domain):
+    def log(self, logText):
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
+        self.ui.logBrowser.append(f'{current_time}: {logText}')
+
+    def DKIMCheck(self, key):
+        domain = self.ui.lineEdit.text()
+        key1 = 'gfdk1._domainkey.' + domain
+        key2 = 'gfdk2._domainkey.' + domain
+        try:
+            record1 = dr.resolve(key1, 'CNAME').rrset
+        except(dr.NoAnswer, dr.NXDOMAIN) as err:
+            self.ui.DKIMLabelResult_1.setText(f'Unexpected {err=}, {type(err)=}')
+            self.log(f'Unexpected {err=}, {type(err)=}')
+
+        try:
+            record2 = dr.resolve(key2, 'CNAME').rrset
+        except(dr.NoAnswer, dr.NXDOMAIN) as err:
+            self.ui.DKIMLabelResult_2.setText(f'Unexpected {err=}, {type(err)=}')
+            self.log(f'Unexpected {err=}, {type(err)=}')
+
+
+        # //? Cannot access record error is being thrown. Need to correct if statment
+        if record1 & record2:
+            records = []
+            records.append(str(record1).split())
+            records.append(str(record2).split())
+            if 'CNAME' in records:
+                if 'dk1.gofax.com.au.' in records:
+                    self.ui.DKIMLabelResult_1.setText(f'{key1} is configured for {domain}')
+                    self.log(f'{key1} is configured for {domain}')
+                else:
+                    self.ui.DKIMLabelResult_1.setText(f'{key1} is NOT configured correctly for {domain}')
+                    self.log(f'{key1} is NOT configured correctly for {domain}')
+                
+                if 'dk2.gofax.com.au.' in records:
+                    self.ui.DKIMLabelResult_2.setText(f'{key2} is configured for {domain}')
+                    self.log(f'{key2} is configured for {domain}')
+                else:
+                    self.ui.DKIMLabelResult_2.setText(f'{key2} is NOT configured correctly for {domain}')
+                    self.log(f'{key2} is NOT configured correctly for {domain}')
+            else:
+                self.ui.DKIMLabelResult_1.setText(f'No CNAME records found for {key1}')
+                self.ui.DKIMLabelResult_2.setText(f'No CNAME records found for {key2}')
+                self.log(f'No CNAME records found for {key1}')
+                self.log(f'No CNAME records found for {key2}')
+            
+
+
+    def SPFCheck(self,domain):        
         response = ""
         txt = []
         i = 0
         try:
             domain = self.ui.lineEdit.text()
+            self.ui.domainLabelResult.setText(domain)
             answer = dr.resolve(domain, 'TXT').rrset
 
             for x in answer:
@@ -39,11 +87,13 @@ class MainWindow(QMainWindow):
                     if 'include:' in n:
                         for x in n.split():
                             if 'include' in x:
-                                txt.append(x.replace('include:', ''))   
+                                txt.append(x.split("include:",1)[1])   
+                                # txt.append(x.replace('include:', '')) 
 
 
             if check in txt:
-                self.ui.textBrowser.append(f'{current_time}: {check} record is in {domain}')
+                self.ui.spfLabelResult.setText(f'{check} record is in {domain}')
+                self.log(f'{check} record is in {domain}')
                 return
             
             else:
@@ -58,20 +108,21 @@ class MainWindow(QMainWindow):
                             if 'include:' in n:
                                 for x in n.split():
                                     if 'include' in x:
-                                        txt.append(x.replace('include:', ''))   
-                                print(txt)
-                                print('\n')
+                                        txt.append(x.split("include:",1)[1])  
+
                     i += 1
 
             if check in txt:
-                self.ui.textBrowser.append(f'{current_time}: {check} record is in {domain}')
+                self.ui.spfLabelResult.setText(f'{check} record is in {domain}')
+                self.log(f'{check} record is in {domain}')
             else: 
-                self.ui.textBrowser.append(f'{current_time}: {check} record is not in {domain}')
+                self.ui.spfLabelResult.setText(f'{check} record is NOT in {domain}')
+                self.log(f'{check} record is NOT in {domain}')
 
 
         except (dr.NoAnswer, dr.NXDOMAIN) as err:
-            self.ui.textBrowser.append(f'{current_time}: Unexpected {err=}, {type(err)=}')
-        
+            self.ui.domainLabelResult.setText(f'Unexpected {err=}, {type(err)=}')
+            self.log(f'Unexpected {err=}, {type(err)=}')
 
         
 
@@ -79,8 +130,12 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
+    
+    sp = app.primaryScreen().availableGeometry()
     window = MainWindow()
+    x = sp.right() - window.width() 
+    y = sp.bottom() - window.height()
+    window.move(x, y)
     window.show()
 
     sys.exit(app.exec())
